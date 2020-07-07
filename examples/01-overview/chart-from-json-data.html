@@ -27,11 +27,11 @@ chart = new CanvasJS.Chart("chartContainer", {
 });
 
 
-$.getJSON("https://canvasjs.com/data/gallery/javascript/daily-sales.json?callback=?", parsedata);	
+$.getJSON("https://canvasjs.com/data/gallery/javascript/daily-sales.json?callback=?", callback);	
 
 }
 
-function parsedata(data) {	
+function callback(data) {	
 	for (var i = 0; i < data.dps.length; i++) {
 		dataPoints.push({
 			x: new Date(data.dps[i].date),

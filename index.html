@@ -39,8 +39,11 @@ function callback(data) {
 			y: data.results[i].value_inc_vat
 		});
 	}
+	// Dates come in reverse order - needs turned around to read sensibly
+	dataPoints.reverse();
 	chart.render(); 
 }
+
 </script>
 </head>
 <body>

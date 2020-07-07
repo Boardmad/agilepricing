@@ -12,7 +12,8 @@ window.onload = function() {
 chart = new CanvasJS.Chart("chartContainer", {
 	animationEnabled: true,
 	zoomEnabled: true,
-	theme: "light2",
+	exportEnabled: true,
+	theme: "light1",
 	title: {
 		text: "Octopus Agile Pricing"
 	},
@@ -70,7 +71,7 @@ function callback(data) {
 </script>
 </head>
 <body>
-<div id="chartContainer" style="height: 600px; max-width: 1500px; margin: 0px auto;"></div>
+<div id="chartContainer" style="height: 75%; max-width: 100%; margin: 0px auto;"></div>
 <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
 <script src="canvasjs.min.js"></script>
 </body>

@@ -40,15 +40,16 @@ function getTariffData(endpoint, tariff) {
 			text: "Tariff: " + tariff
 		},
 		axisX:{
+			stripLines: [{
+				value: Date.now() ,
+				label: "Now",
+				labelFontColor: "#808080",
+				labelAlign: "near",
+				thickness: 3,
+				}],
 			crosshair: {
 				enabled: true,
 				snapToDataPoint: true,
-				stripLines: [{
-				value: 3,
-				label: "Now",
-				labelFontColor: "#808080",
-				labelAlign: "near"
-				}]
 			}		
 		},
 		axisY: {

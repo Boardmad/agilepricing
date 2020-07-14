@@ -7,8 +7,10 @@ window.onload = function() {
 
 	// Call out for Octopus Agile Tarriffs Dataset
 	$.getJSON("https://api.octopus.energy/v1/products/AGILE-18-02-21/", tariffsCallback)	
-	.done(function() { $("#divOutput").html($("#divOutput").html+"< br />getJSON Tariffs completed"); })
-	.fail(function(jqXHR, textStatus, errorThrown) { $("#divOutput").html($("#divOutput").html+"< br />Failed to retrieve agile tariffs data" + textStatus); });
+	//.done(function() { $("#divOutput").html($("#divOutput").html+"< br />getJSON Tariffs completed"); })
+	//.fail(function(jqXHR, textStatus, errorThrown) { $("#divOutput").html($("#divOutput").html+"< br />Failed to retrieve agile tariffs data" + textStatus); })
+	// Note trailing semi !
+	;
 }
 
 function tariffsCallback(data) {		
@@ -76,9 +78,10 @@ function getTariffData(endpoint, tariff) {
 	//alert("Getting " + endpoint)
 	// Call out for specific Agile Tariff Dataset
 	$.getJSON(endpoint, tariffCallback)	
-	.done(function() { $("#divOutput").html($("#divOutput").html+"< br />getJSON Tariff completed"); })
-	.fail(function(jqXHR, textStatus, errorThrown) { $("#divOutput").html($("#divOutput").html+"< br />Failed to retrieve tariff data" + textStatus); });
-
+	//.done(function() { $("#divOutput").html($("#divOutput").html+"< br />getJSON Tariff completed"); })
+	//.fail(function(jqXHR, textStatus, errorThrown) { $("#divOutput").html($("#divOutput").html+"< br />Failed to retrieve tariff data" + textStatus); })
+	// Note trailing semi!
+	;
 }
 
 function tariffCallback(data) {			

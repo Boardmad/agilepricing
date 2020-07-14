@@ -11,9 +11,22 @@ window.onload = function() {
 }
 
 function tariffsCallback(data) {		
+	if (data == null){
+		$("#divDebug").html($("#divDebug").html+"< br />Failed to retrieve agile tariffs data");
+	}	
 	
-	tariffDPS.push("<input id=\"A\" type=\"button\" value=\"", data.single_register_electricity_tariffs._A.direct_debit_monthly.code, "\" onclick=\"getTariffData(\'", data.single_register_electricity_tariffs._A.direct_debit_monthly.links[1].href, "\',\'", data.single_register_electricity_tariffs._A.direct_debit_monthly.code, "\');\" /><br />");
-	tariffDPS.push("<input id=\"B\" type=\"button\" value=\"", data.single_register_electricity_tariffs._B.direct_debit_monthly.code, "\" onclick=\"getTariffData(\'", data.single_register_electricity_tariffs._B.direct_debit_monthly.links[1].href, "\',\'", data.single_register_electricity_tariffs._B.direct_debit_monthly.code, "\');\" /><br />");
+	var iterArr = ["A","B","C","D","E","F","G","H","J","K","L","M","N","P"];
+	var i, len;
+	for (len = iterArr.length, i=0; i<len; i++) {	
+		
+		// Ugly - no obvious way to programatically retrieve the tariffs from the all_tariffs JSON
+		tariffDPS.push("<input id=\""+iterArr[i]+"\" type=\"button\" value=\"", eval("data.single_register_electricity_tariffs._"+iterArr[i]+".direct_debit_monthly.code"), "\" onclick=\"getTariffData(\'", eval("data.single_register_electricity_tariffs._"+iterArr[i]+".direct_debit_monthly.links[1].href"), "\',\'", eval("data.single_register_electricity_tariffs._"+iterArr[i]+".direct_debit_monthly.code"), "\');\" /><br />");
+	
+		$("#divDebug").html($("#divDebug").html+"< br />"+iterArr[i]);
+
+	}
+
+	/*tariffDPS.push("<input id=\"B\" type=\"button\" value=\"", data.single_register_electricity_tariffs._B.direct_debit_monthly.code, "\" onclick=\"getTariffData(\'", data.single_register_electricity_tariffs._B.direct_debit_monthly.links[1].href, "\',\'", data.single_register_electricity_tariffs._B.direct_debit_monthly.code, "\');\" /><br />");
 	tariffDPS.push("<input id=\"C\" type=\"button\" value=\"", data.single_register_electricity_tariffs._C.direct_debit_monthly.code, "\" onclick=\"getTariffData(\'", data.single_register_electricity_tariffs._C.direct_debit_monthly.links[1].href, "\',\'", data.single_register_electricity_tariffs._C.direct_debit_monthly.code, "\');\" /><br />");
 	tariffDPS.push("<input id=\"D\" type=\"button\" value=\"", data.single_register_electricity_tariffs._D.direct_debit_monthly.code, "\" onclick=\"getTariffData(\'", data.single_register_electricity_tariffs._D.direct_debit_monthly.links[1].href, "\',\'", data.single_register_electricity_tariffs._D.direct_debit_monthly.code, "\');\" /><br />");
 	tariffDPS.push("<input id=\"E\" type=\"button\" value=\"", data.single_register_electricity_tariffs._E.direct_debit_monthly.code, "\" onclick=\"getTariffData(\'", data.single_register_electricity_tariffs._E.direct_debit_monthly.links[1].href, "\',\'", data.single_register_electricity_tariffs._E.direct_debit_monthly.code, "\');\" /><br />");
@@ -26,6 +39,7 @@ function tariffsCallback(data) {
 	tariffDPS.push("<input id=\"M\" type=\"button\" value=\"", data.single_register_electricity_tariffs._M.direct_debit_monthly.code, "\" onclick=\"getTariffData(\'", data.single_register_electricity_tariffs._M.direct_debit_monthly.links[1].href, "\',\'", data.single_register_electricity_tariffs._M.direct_debit_monthly.code, "\');\" /><br />");
 	tariffDPS.push("<input id=\"N\" type=\"button\" value=\"", data.single_register_electricity_tariffs._N.direct_debit_monthly.code, "\" onclick=\"getTariffData(\'", data.single_register_electricity_tariffs._N.direct_debit_monthly.links[1].href, "\',\'", data.single_register_electricity_tariffs._N.direct_debit_monthly.code, "\');\" /><br />");
 	tariffDPS.push("<input id=\"P\" type=\"button\" value=\"", data.single_register_electricity_tariffs._P.direct_debit_monthly.code, "\" onclick=\"getTariffData(\'", data.single_register_electricity_tariffs._P.direct_debit_monthly.links[1].href, "\',\'", data.single_register_electricity_tariffs._P.direct_debit_monthly.code, "\');\" />");	
+	*/
 	
 	/* never build an HTML string in a loop, load to array then join with emptystring */
 	$("#divTariffs").html(tariffDPS.join(''));
@@ -90,10 +104,15 @@ function getTariffData(endpoint, tariff) {
 }
 
 function tariffCallback(data) {			
+	if (data == null){
+		$("#divDebug").html($("#divDebug").html+"<br />Failed to retrieve tariff data");
+	}
+
 	var i, len;
-	var lo=10;
+	var lo=20; //fake lowest low
 	var hi=0;
 	for (len = data.results.length, i=0; i<len; i++) {	
+		// evaluate and set lo/hi price range values
 		if (data.results[i].value_inc_vat < lo){
 			lo = data.results[i].value_inc_vat;
 		}
@@ -101,12 +120,16 @@ function tariffCallback(data) {
 			hi = data.results[i].value_inc_vat;
 		}
 
+		//evaluate if price point is less that zero and style accordingly
 		if (data.results[i].value_inc_vat <= 0) {
 			dataPoints.push({x: new Date(data.results[i].valid_to),	y: data.results[i].value_inc_vat, markerType: "cross", markerColor: "tomato" });	
 		}else{
 			dataPoints.push({x: new Date(data.results[i].valid_to),	y: data.results[i].value_inc_vat, markerType: "none"});
 		}
 	} 
-	$("#divRange").html(lo+" - "+hi);
+
+	//Update price range label
+	$("#divRange").html("Price Range: " +lo+" - "+hi+ "p per kWh");
+	//Render the chart object
 	chart.render(); 
 }

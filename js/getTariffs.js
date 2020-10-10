@@ -2,6 +2,7 @@
 var chart = null;
 var tariffDPS = [];
 var dataPoints = [];
+var page = 1;
 
 window.onload = function() {
 	// Call out for Octopus Agile Tarriffs Dataset
@@ -64,7 +65,7 @@ function tariffCallback(data) {
 		}
 
 		//evaluate if price point is less that zero and style accordingly
-		if (data.results[i].value_inc_vat <= 0) {
+		if (data.results[i].value_inc_vat <= 6) {
 			dataPoints.push({x: new Date(data.results[i].valid_to),	y: data.results[i].value_inc_vat, markerType: "cross", markerColor: "tomato" });	
 		}else{
 			dataPoints.push({x: new Date(data.results[i].valid_to),	y: data.results[i].value_inc_vat, markerType: "none"});

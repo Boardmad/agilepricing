@@ -64,19 +64,12 @@ function drawChart() {
             }
 		]
     });
-
-
-    // Call out for specific Agile Tariff Dataset - can use .getJSON as tariff data is un-authenticated
-	//$.getJSON("https://api.octopus.energy/v1/products/AGILE-18-02-21/electricity-tariffs/E-1R-AGILE-18-02-21-A/standard-unit-rates/", tariffCallback)	
-	//.done(function() { $("#divOutput").html($("#divOutput").html+"< br />getJSON Tariff completed"); })
-	//.fail(function(jqXHR, textStatus, errorThrown) { alert("Failed to retrieve hourly pricing data" + textStatus); }) ;
     
     $.ajax
     ({
       type: "GET",
       url: "https://api.octopus.energy/v1/products/AGILE-18-02-21/electricity-tariffs/E-1R-AGILE-18-02-21-A/standard-unit-rates/",
       dataType: "json",
-      //headers: {"Authorization": "Basic " + btoa("sk_live_fiqOWmIlFXa3ucEU3L3ro2AD:")},
       data: "",
       success: function(data) {
         //  Success block
@@ -121,7 +114,7 @@ function drawChart() {
       type: "GET",
       url: "https://api.octopus.energy/v1/electricity-meter-points/2700001871092/meters/20L3351332/consumption/",
       dataType: "json",
-      headers: {"Authorization": "Basic " + btoa("sk_live_fiqOWmIlFXa3ucEU3L3ro2AD:")},
+      headers: {"Authorization": "Basic " + btoa("ENTER_OCTO_KEY:")},
       data: "",
       success: function(data) {
         //  Success block
@@ -137,33 +130,4 @@ function drawChart() {
       } 
     });
 
-}
-
-// Helpers
-function tariffCallback(data) {			
-	var lo=20; //fake lowest low
-	var hi=0;
-	for (len = data.results.length, i=0; i<len; i++) {	
-
-		// evaluate and set lo/hi price range values
-		if (data.results[i].value_inc_vat < lo){
-			lo = data.results[i].value_inc_vat;
-		}
-		if (data.results[i].value_inc_vat > hi){
-			hi = data.results[i].value_inc_vat;
-        }
-        if (Date(data.results[i].valid_to) < earliest){
-         //   earliest = Date(data.results[i].valid_to);
-        }
-		//evaluate if price point is less that zero and style accordingly
-		if (data.results[i].value_inc_vat <= 5) {
-			tarData.push({x: new Date(data.results[i].valid_to),	y: data.results[i].value_inc_vat, markerType: "cross", markerColor: "tomato" });	
-		}else{
-			tarData.push({x: new Date(data.results[i].valid_to),	y: data.results[i].value_inc_vat, markerType: "none"});
-		}
-    } 
-	//Update price range label
-	$("#divRange").html("Price Range: " +lo+" - "+hi+ "p per kWh");
-	//Render the chart object
-	chart.render(); 
-}
+};

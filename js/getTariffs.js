@@ -13,34 +13,39 @@ var gasData = [];	// An array of datapoints for our gas meter
 
 window.onload = function() {
 	// Call out for Octopus Agile Tarriffs Dataset
-	$.getJSON("https://api.octopus.energy/v1/products/AGILE-18-02-21/", tariffsCallback)	
+	//$.getJSON("https://api.octopus.energy/v1/products/AGILE-18-02-21/", tariffsCallback)	
 	//.done(function() { $("#divOutput").html($("#divOutput").html+"< br />getJSON Tariffs completed"); })
-	.fail(function(jqXHR, textStatus, errorThrown) { alert("Failed to retrieve agile tariffs data" + textStatus); });
+	//.fail(function(jqXHR, textStatus, errorThrown) { alert("Failed to retrieve agile tariffs data" + textStatus); });
+
+	//https://api.octopus.energy/v1/products/AGILE-18-02-21/electricity-tariffs/E-1R-AGILE-18-02-21-A/standard-unit-rates/','E-1R-AGILE-18-02-21-A');
+
+	drawChart("https://api.octopus.energy/v1/products/AGILE-18-02-21/electricity-tariffs/E-1R-AGILE-18-02-21-A/standard-unit-rates/");
+
 }
 
 /* getJSON Tariffs callback functions */
-function tariffsCallback(data) {		
+//function tariffsCallback(data) {		
 	//Tariff identifiers
-	var iterArr = ["A","B","C","D","E","F","G","H","J","K","L","M","N","P"];
-	var i, len;
-	for (len = iterArr.length, i=0; i<len; i++) {			
+//	var iterArr = ["A","B","C","D","E","F","G","H","J","K","L","M","N","P"];
+//	var i, len;
+//	for (len = iterArr.length, i=0; i<len; i++) {			
 		// Ugly - no obvious way to programatically retrieve the tariffs from the all_tariffs JSON
-		tariffDPS.push("<input id=\""+iterArr[i]+"\" type=\"button\" value=\"", eval("data.single_register_electricity_tariffs._"+iterArr[i]+".direct_debit_monthly.code"), "\" onclick=\"drawChart(\'", eval("data.single_register_electricity_tariffs._"+iterArr[i]+".direct_debit_monthly.links[1].href"), "\',\'", eval("data.single_register_electricity_tariffs._"+iterArr[i]+".direct_debit_monthly.code"), "\');\" /><br />");
-	}	
+//		tariffDPS.push("<input id=\""+iterArr[i]+"\" type=\"button\" value=\"", eval("data.single_register_electricity_tariffs._"+iterArr[i]+".direct_debit_monthly.code"), "\" onclick=\"drawChart(\'", eval("data.single_register_electricity_tariffs._"+iterArr[i]+".direct_debit_monthly.links[1].href"), "\',\'", eval("data.single_register_electricity_tariffs._"+iterArr[i]+".direct_debit_monthly.code"), "\');\" /><br />");
+//	}	
 	/* never build an HTML string in a loop, load to array then join with emptystring */
-	$("#divTariffs").html(tariffDPS.join(''));
-}
+//	$("#divTariffs").html(tariffDPS.join(''));
+//}
 
-function drawChart(endpoint, tariff) {
+function drawChart(endpoint) {
 	// re-initialise the chart object
 	chart = null;
-	dataPoints = [];
+	//dataPoints = [];
 	chart = new CanvasJS.Chart("divChart", {
 		animationEnabled: true,
 		zoomEnabled: true,
 		exportEnabled: true,
-		theme: "light1",
-		title: { text: "Tariff: " + tariff },
+		theme: "light2",
+		title: { text: "Octopus Agile"},
 		axisX:{
 			stripLines: [{ value: Date.now(), label: "Now",	labelFontColor: "#808080", labelAlign: "near",	thickness: 3 }],
 			crosshair: { enabled: true,	snapToDataPoint: true }		
@@ -50,7 +55,17 @@ function drawChart(endpoint, tariff) {
 				{ enabled: true, snapToDataPoint: true,	labelFormatter: function(e) { return CanvasJS.formatNumber(e.value, "##0.000") + " p/kWh"; }
 			}
 		},
-		data: [{ type: "area", markerSize: 12, xValueType: "dateTime", xValueFormatString: "DD MMM hh:mm TT", valueFormatString: "##0",	connectNullData: true,	dataPoints: dataPoints }]
+		data: [
+			{ 
+				type: "area", 
+				markerSize: 12, 
+				xValueType: "dateTime", 
+				xValueFormatString: "DD MMM hh:mm TT", 
+				valueFormatString: "##0",	
+				connectNullData: true,	
+				dataPoints: dataPoints 
+			}
+		]
 	});
 	// Call out for specific Agile Tariff Dataset
 	$.getJSON(endpoint, tariffCallback)	

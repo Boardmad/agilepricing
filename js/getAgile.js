@@ -82,8 +82,9 @@ function drawChart() {
             if (data.results[i].value_inc_vat > hi){
                 hi = data.results[i].value_inc_vat;
             }
-            if (new Date(data.results[i].valid_to) < new Date(earliest)) {
-                earliest = new Date(data.results[i].valid_to);
+            var tarDate = new Date(data.results[i].valid_to);
+            if (tarDate <= new Date(earliest)) {
+                earliest = tarDate;
             }
            
             //evaluate if price point is less that zero and style accordingly
@@ -93,7 +94,7 @@ function drawChart() {
                 tarData.push({x: new Date(data.results[i].valid_to),	y: data.results[i].value_inc_vat, markerType: "none"});
             }
         } 
-
+        
         //Update price range label
         $("#divRange").html("Price Range: " +lo+" - "+hi+ "p per kWh");
         //Render the chart object
@@ -114,13 +115,19 @@ function drawChart() {
       type: "GET",
       url: "https://api.octopus.energy/v1/electricity-meter-points/2700001871092/meters/20L3351332/consumption/",
       dataType: "json",
-      headers: {"Authorization": "Basic " + btoa("ENTER_OCTO_KEY:")},
+      //headers: {"Authorization": "Basic " + btoa("ENTER_OCTO_KEY:")},
+      headers: {"Authorization": "Basic " + btoa("sk_live_fiqOWmIlFXa3ucEU3L3ro2AD:")},
+      
       data: "",
       success: function(data) {
         //  Success block
         for (len = data.results.length, i=0; i<len; i++) {	
-            if (new Date(data.results[i].interval_end) < earliest){
-                elecData.push({x: new Date(data.results[i].interval_end),	y: data.results[i].consumption, markerType: "none" });	
+            var resultDate = new Date(data.results[i].interval_end);
+
+            alert(resultDate + " " + earliest + " " + resultDate >= earliest);
+            
+            if (resultDate >= earliest){
+                elecData.push({x: resultDate,	y: data.results[i].consumption, markerType: "none" });	
             }
         } 
       },

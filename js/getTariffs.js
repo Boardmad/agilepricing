@@ -4,7 +4,7 @@ var tariffDPS = []; // An array of strings making up the tariff buttons and thei
 var dataPoints = [];// An array of datapoints for the retrieved tariff 
 var elecData = [];  // An array of datapoints for our electricity endpoint
 var gasData = [];	// An array of datapoints for our gas meter
-//var paging = 1;		// An interator for moving through data pages...not yet implemente
+//var paging = 1;		// An interator for moving through data pages...not yet implemented
 
 
 // On window load retrieve all current Agile Tariff half hourly rates and render

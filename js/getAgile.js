@@ -25,7 +25,7 @@ function drawChart() {
 			crosshair: { enabled: true,	snapToDataPoint: true }		
 			},
 		axisY: {
-			minimum: 0,	interval: 5, title: "Tariff / kWh", includeZero: false, crosshair: 
+			minimum: -10,	interval: 5, title: "Tariff / kWh", includeZero: false, crosshair: 
 				{ enabled: true, snapToDataPoint: true,	labelFormatter: function(e) { return CanvasJS.formatNumber(e.value, "##0.000") + " p/kWh"; }
             }
         },
@@ -39,7 +39,7 @@ function drawChart() {
         },
 		data: [
 			{ 
-				type: "area", 
+				type: "line", 
                 name: "Tariff cost",
                 showInLegend: true,
                 markerSize: 12, 
@@ -65,10 +65,53 @@ function drawChart() {
 		]
     });
     
+//    $.ajax
+//   ({
+//      type: "GET",
+//      url: "https://api.octopus.energy/v1/products/AGILE-18-02-21/electricity-tariffs/E-1R-AGILE-18-02-21-A/standard-unit-rates/?page=1",
+//      dataType: "json",
+//      data: "",
+//     success: function(data) {
+//        //  Success block
+//        for (len = data.results.length, i=0; i<len; i++) {	
+//    
+//            // evaluate and set lo/hi price range values
+//            if (data.results[i].value_inc_vat < lo){
+//                lo = data.results[i].value_inc_vat;
+//            }
+//            if (data.results[i].value_inc_vat > hi){
+//                hi = data.results[i].value_inc_vat;
+//            }
+//            //if (new Date(data.results[i].valid_to) <= new Date(earliest)) {
+//            //    earliest = new Date(data.results[i].valid_to);
+//            //}
+//           
+//            //evaluate if price point is less that zero and style accordingly
+//            if (data.results[i].value_inc_vat <= 5) {
+//                tarData.push({x: new Date(data.results[i].valid_to),	y: data.results[i].value_inc_vat, markerType: "cross", markerColor: "tomato" });	
+//            }else{
+//                tarData.push({x: new Date(data.results[i].valid_to),	y: data.results[i].value_inc_vat, markerType: "none"});
+//            }
+//        } 
+
+        
+        //Update price range label
+//        $("#divRange").html("Price Range: " +lo+" - "+hi+ "p per kWh");
+        //Render the chart object
+        //chart.render(); 
+
+//      },
+//      error: function (xhr,ajaxOptions,throwError){
+       //Error block 
+//       alert("Error retrieving Tariff Data: " + throwError)
+//      } 
+//    });
+var iter = 1;
+while (iter < 5) {
     $.ajax
     ({
       type: "GET",
-      url: "https://api.octopus.energy/v1/products/AGILE-18-02-21/electricity-tariffs/E-1R-AGILE-18-02-21-A/standard-unit-rates/",
+      url: "https://api.octopus.energy/v1/products/AGILE-18-02-21/electricity-tariffs/E-1R-AGILE-18-02-21-A/standard-unit-rates/?page=" + iter,
       dataType: "json",
       data: "",
       success: function(data) {
@@ -82,10 +125,9 @@ function drawChart() {
             if (data.results[i].value_inc_vat > hi){
                 hi = data.results[i].value_inc_vat;
             }
-            var tarDate = new Date(data.results[i].valid_to);
-            if (tarDate <= new Date(earliest)) {
-                earliest = tarDate;
-            }
+            //if (new Date(data.results[i].valid_to) <= new Date(earliest)) {
+            //    earliest = new Date(data.results[i].valid_to);
+            //}
            
             //evaluate if price point is less that zero and style accordingly
             if (data.results[i].value_inc_vat <= 5) {
@@ -94,6 +136,8 @@ function drawChart() {
                 tarData.push({x: new Date(data.results[i].valid_to),	y: data.results[i].value_inc_vat, markerType: "none"});
             }
         } 
+
+        //alert($.ajax.url);
         
         //Update price range label
         $("#divRange").html("Price Range: " +lo+" - "+hi+ "p per kWh");
@@ -107,28 +151,25 @@ function drawChart() {
       } 
     });
 
+    iter++;
+    
+
 
     // Meter usage data is authenticated and requires headers set and issued prior to GET being initiated 
     // or you just get 401
     $.ajax
     ({
       type: "GET",
-      url: "https://api.octopus.energy/v1/electricity-meter-points/2700001871092/meters/20L3351332/consumption/",
+      url: "https://api.octopus.energy/v1/electricity-meter-points/2700001871092/meters/20L3351332/consumption/?page=" + iter,
       dataType: "json",
-      //headers: {"Authorization": "Basic " + btoa("ENTER_OCTO_KEY:")},
       headers: {"Authorization": "Basic " + btoa("sk_live_fiqOWmIlFXa3ucEU3L3ro2AD:")},
-      
       data: "",
       success: function(data) {
         //  Success block
         for (len = data.results.length, i=0; i<len; i++) {	
-            var resultDate = new Date(data.results[i].interval_end);
-
-            alert(resultDate + " " + earliest + " " + resultDate >= earliest);
-            
-            if (resultDate >= earliest){
-                elecData.push({x: resultDate,	y: data.results[i].consumption, markerType: "none" });	
-            }
+            //if (new Date(data.results[i].interval_end) <= earliest){
+                elecData.push({x: new Date(data.results[i].interval_end),	y: data.results[i].consumption, markerType: "none" });	
+            //}
         } 
       },
       error: function (xhr,ajaxOptions,throwError){
@@ -136,5 +177,7 @@ function drawChart() {
        alert("Error retrieving Electricity Meter Data: " + throwError)
       } 
     });
+
+}
 
 };

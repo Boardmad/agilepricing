@@ -162,7 +162,7 @@ while (iter < 5) {
       type: "GET",
       url: "https://api.octopus.energy/v1/electricity-meter-points/2700001871092/meters/20L3351332/consumption/?page=" + iter,
       dataType: "json",
-      headers: {"Authorization": "Basic " + btoa("sk_live_fiqOWmIlFXa3ucEU3L3ro2AD:")},
+      headers: {"Authorization": "Basic " + btoa(":")},
       data: "",
       success: function(data) {
         //  Success block
